@@ -35,8 +35,8 @@ sensor:
       - multiply: 3.3
 
 light:
-  - platform: neopixelbus
-    type: GRB
+  - platform: fastled_clockless
+    chipset: WS2812
     pin: GPIO16
     num_leds: 300
     name: "Gledopto LED Strip"
