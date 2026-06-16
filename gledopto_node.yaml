@@ -14,39 +14,94 @@ wifi:
 
 logger:
 
+web_server:
+  port: 80
+
 api:
 
 ota:
   platform: esphome
   password: "Lightshow22"
-  
-captive_portal:
 
-output:
-  - platform: gpio
-    pin: GPIO16
-    id: status_led
+captive_portal:
 
 sensor:
   - platform: adc
     pin: GPIO36
-    name: "Mic ADC"
+    id: sound_level
+    name: "Sound Level"
     update_interval: 50ms
     filters:
-      - sliding_window_moving_average:
-          window_size: 5
-          send_every: 1
+      - multiply: 3.3
 
 light:
-  - platform: fastled_clockless
-    chipset: WS2812
-    pin: GPIO2
+  - platform: neopixelbus
+    type: GRB
+    pin: GPIO16
     num_leds: 300
-    rgb_order: GRB
-    name: "LED Strip"
-    id: led_strip
+    name: "Gledopto LED Strip"
+    id: gledopto_led_strip
     effects:
-      - strobe
-      - flicker
-      - random
-# trigger build
+      - random:
+          name: "Random"
+      - strobe:
+          name: "Strobe"
+      - pulse:
+          name: "Pulse"
+      - addressable_rainbow:
+          name: "Rainbow"
+      - addressable_color_wipe:
+          name: "Color Wipe"
+      - addressable_twinkle:
+          name: "Twinkle"
+      - addressable_scan:
+          name: "Scan"
+      - addressable_fireworks:
+          name: "Fireworks"
+      - addressable_flicker:
+          name: "Flicker"
+
+      # ⚡ Techno Lightning Effect (Sound Reactive)
+      - addressable_lambda:
+          name: "Techno Lightning"
+          update_interval: 10ms
+          lambda: |-
+            static int cooldown = 0;
+            static int strike_pos = 0;
+            static int strike_len = 0;
+
+            float level = id(sound_level).state;
+
+            if (level > 0.6 && cooldown == 0) {
+              strike_pos = random(0, it.size());
+              strike_len = random(5, 40);
+              cooldown = 5;
+            }
+
+            if (cooldown > 0) {
+              for (int i = strike_pos; i < strike_pos + strike_len && i < it.size(); i++) {
+                it[i] = ESPColor(255, 255, 255);
+              }
+              cooldown--;
+            } else {
+              for (int i = 0; i < it.size(); i++) {
+                it[i].fade_to_black(20);
+              }
+            }
+
+status_led:
+  pin: GPIO2
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      inverted: true
+    name: "Reset Button"
+    on_press:
+      - switch.toggle: restart_switch
+
+switch:
+  - platform: restart
+    name: "Restart Controller"
+    id: restart_switch
