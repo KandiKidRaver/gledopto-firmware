@@ -46,7 +46,7 @@ light:
     name: "LED Strip"
     id: led_strip
     effects:
-      - strobe:
-      - flicker:
-      - random:
+      - strobe
+      - flicker
+      - random
 # trigger build
