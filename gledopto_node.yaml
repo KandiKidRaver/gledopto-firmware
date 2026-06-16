@@ -1,5 +1,5 @@
 esphome:
-  name: gledopto_node
+  name: gledopto-node
 
 esp32:
   board: esp32dev
