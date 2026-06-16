@@ -60,8 +60,6 @@ light:
           name: "Fireworks"
       - addressable_flicker:
           name: "Flicker"
-
-      # ⚡ Techno Lightning Effect (Sound Reactive)
       - addressable_lambda:
           name: "Techno Lightning"
           update_interval: 10ms
