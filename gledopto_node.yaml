@@ -1,0 +1,48 @@
+esphome:
+  name: gledopto_node
+
+esp32:
+  board: esp32dev
+
+wifi:
+  ssid: "Telstra1D9F43"
+  password: "vjm99358snktgxsb"
+  manual_ip:
+    static_ip: 192.168.0.110
+    gateway: 192.168.0.1
+    subnet: 255.255.255.0
+
+logger:
+
+api:
+
+ota:
+  password: "Lightshow22"
+
+output:
+  - platform: gpio
+    pin: GPIO16
+    id: status_led
+
+sensor:
+  - platform: adc
+    pin: GPIO36
+    name: "Mic ADC"
+    update_interval: 50ms
+    filters:
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 1
+
+light:
+  - platform: fastled_clockless
+    chipset: WS2812
+    pin: GPIO2
+    num_leds: 300
+    rgb_order: GRB
+    name: "LED Strip"
+    id: led_strip
+    effects:
+      - strobe:
+      - flicker:
+      - random:
