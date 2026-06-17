@@ -26,7 +26,8 @@ ota:
   password: !secret ota_password
 
 captive_portal:
-
+- name: Compile ESPHome firmware
+  run: esphome compile gledopto_node.yaml -v
 sensor:
   - platform: adc
     pin: GPIO36
@@ -41,7 +42,7 @@ light:
     chipset: WS2812
     pin: GPIO16
     num_leds: 300
-    name: "Gledopto LED Strip"
+    name: "Gledopto LED Strip"esphome compile gledopto_node.yaml -v
     id: gledopto_led_strip
     effects:
       - random:
@@ -62,32 +63,32 @@ light:
           name: "Fireworks"
       - addressable_flicker:
           name: "Flicker"
-      - addressable_lambda:
-          name: "Techno Lightning"
-          update_interval: 10ms
-          lambda: |-
-            static int cooldown = 0;
-            static int strike_pos = 0;
-            static int strike_len = 0;
+             - addressable_lambda:
+           name: "Techno Lightning"
+           update_interval: 10ms
+           lambda: |-
+             static int cooldown = 0;
+             static int strike_pos = 0;
+             static int strike_len = 0;
 
-            float level = id(sound_level).state;
+             float level = id(sound_level).state;
 
-            if (level > 0.6 && cooldown == 0) {
-              strike_pos = random(0, it.size());
-              strike_len = random(5, 40);
-              cooldown = 5;
-            }
+             if (level > 0.6 && cooldown == 0) {
+               strike_pos = random(0, it.size());
+               strike_len = random(5, 40);
+               cooldown = 5;
+             }
 
-            if (cooldown > 0) {
-              for (int i = strike_pos; i < strike_pos + strike_len && i < it.size(); i++) {
-                it[i] = CRGB(255, 255, 255);
-              }
-              cooldown--;
-            } else {
-              for (int i = 0; i < it.size(); i++) {
-                it[i].fadeToBlackBy(20);
-              }
-            }
+             if (cooldown > 0) {
+               for (int i = strike_pos; i < strike_pos + strike_len && i < it.size(); i++) {
+                 it[i] = CRGB(255, 255, 255);
+               }
+               cooldown--;
+             } else {
+               for (int i = 0; i < it.size(); i++) {
+                 it[i].fadeToBlackBy(20);
+               }
+             }
 
 status_led:
   pin: GPIO2
