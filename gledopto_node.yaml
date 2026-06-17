@@ -80,12 +80,12 @@ light:
 
             if (cooldown > 0) {
               for (int i = strike_pos; i < strike_pos + strike_len && i < it.size(); i++) {
-                it[i] = ESPColor(255, 255, 255);
+                it[i] = CRGB(255, 255, 255);
               }
               cooldown--;
             } else {
               for (int i = 0; i < it.size(); i++) {
-                it[i].fade_to_black(20);
+                it[i].fadeToBlackBy(20);
               }
             }
 
