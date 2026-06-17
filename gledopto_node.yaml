@@ -27,6 +27,12 @@ ota:
 
 captive_portal:
 
+# Seed the random generator on boot for varied strikes
+on_boot:
+  then:
+    - lambda: |-
+        randomSeed(micros());
+
 sensor:
   - platform: adc
     pin: GPIO36
@@ -64,7 +70,7 @@ light:
           name: "Flicker"
       - addressable_lambda:
           name: "Techno Lightning"
-          update_interval: 10ms
+          update_interval: 20ms
           lambda: |-
             static int cooldown = 0;
             static int strike_pos = 0;
@@ -80,12 +86,17 @@ light:
 
             if (cooldown > 0) {
               for (int i = strike_pos; i < strike_pos + strike_len && i < it.size(); i++) {
-                it[i] = CRGB(255, 255, 255);
+                it[i] = { 255, 255, 255 };
               }
               cooldown--;
             } else {
+              const float fade_factor = 0.92f;
               for (int i = 0; i < it.size(); i++) {
-                it[i].fadeToBlackBy(20);
+                auto c = it[i];
+                uint8_t nr = (uint8_t)((float)c.r * fade_factor);
+                uint8_t ng = (uint8_t)((float)c.g * fade_factor);
+                uint8_t nb = (uint8_t)((float)c.b * fade_factor);
+                it[i] = { nr, ng, nb };
               }
             }
 
