@@ -23,7 +23,7 @@ api:
 
 ota:
   platform: esphome
-  password: "Lightshow22"
+  password: !secret ota_password
 
 captive_portal:
 
